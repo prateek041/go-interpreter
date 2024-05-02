@@ -11,8 +11,18 @@ const (
 	INT   = "INT"
 
 	// operators =, +
-	ASSIGN = "="
-	PLUS   = "+"
+	ASSIGN   = "="
+	PLUS     = "+"
+	MINUS    = "-"
+	BANG     = "!"
+	ASTERISK = "*"
+	SLASH    = "/"
+
+	LT = "<"
+	GT = ">"
+
+	EQ     = "=="
+	NOT_EQ = "!="
 
 	// delimeters
 	LPAREN = "("
@@ -26,6 +36,11 @@ const (
 	// keywords
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
+	IF       = "IF"
+	RETURN   = "RETURN"
+	TRUE     = "TRUE"
+	ELSE     = "ELSE"
+	FALSE    = "FALSE"
 )
 
 type Token struct {
@@ -35,8 +50,13 @@ type Token struct {
 }
 
 var keywords = map[string]string{
-	"let": LET,
-	"fn":  FUNCTION,
+	"let":    LET,
+	"fn":     FUNCTION,
+	"return": RETURN,
+	"true":   TRUE,
+	"false":  FALSE,
+	"if":     IF,
+	"else":   ELSE,
 }
 
 // GetIdent takes the input unkown string, which is recognized by compiler and returns the type of it, i.e. if it is a keyword or an identifier

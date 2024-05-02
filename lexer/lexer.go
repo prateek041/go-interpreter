@@ -39,7 +39,14 @@ func (l *Lexer) NextToken() token.Token {
 
 	switch l.ch {
 	case '=':
-		tok = token.Token{Type: token.ASSIGN, Literal: string(l.ch)}
+		if l.peakChar() == '=' {
+			firstChar := l.ch
+			l.readChar()
+			literal := string(firstChar) + string(l.ch)
+			tok = token.Token{Type: token.EQ, Literal: literal}
+		} else {
+			tok = token.Token{Type: token.ASSIGN, Literal: string(l.ch)}
+		}
 
 	case '+':
 		tok = token.Token{Type: token.PLUS, Literal: string(l.ch)}
@@ -61,6 +68,31 @@ func (l *Lexer) NextToken() token.Token {
 
 	case ',':
 		tok = token.Token{Type: token.COMMA, Literal: string(l.ch)}
+
+	case '-':
+		tok = token.Token{Type: token.MINUS, Literal: string(l.ch)}
+
+	case '!':
+		if l.peakChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			tok = token.Token{Type: token.NOT_EQ, Literal: literal}
+		} else {
+			tok = token.Token{Type: token.BANG, Literal: string(l.ch)}
+		}
+
+	case '*':
+		tok = token.Token{Type: token.ASTERISK, Literal: string(l.ch)}
+
+	case '/':
+		tok = token.Token{Type: token.SLASH, Literal: string(l.ch)}
+
+	case '<':
+		tok = token.Token{Type: token.LT, Literal: string(l.ch)}
+
+	case '>':
+		tok = token.Token{Type: token.GT, Literal: string(l.ch)}
 
 	case 0:
 		tok.Literal = ""
@@ -111,6 +143,14 @@ func (l *Lexer) getNumber() string {
 	}
 
 	return l.input[startPoint:l.position]
+}
+
+func (l *Lexer) peakChar() byte {
+	if l.readPosition >= len(l.input) {
+		return 0
+	}
+	ch := l.input[l.readPosition]
+	return ch
 }
 
 func isDigit(ch byte) bool {
