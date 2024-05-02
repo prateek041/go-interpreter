@@ -1,6 +1,10 @@
 package lexer
 
-import "github.com/prateek041/go-interpreter/token"
+import (
+	"fmt"
+
+	"github.com/prateek041/go-interpreter/token"
+)
 
 type Lexer struct {
 	input        string
@@ -30,6 +34,8 @@ func (l *Lexer) readChar() {
 // NextToken takes the current character in the lexer, and returns a token for it.
 func (l *Lexer) NextToken() token.Token {
 	tok := token.Token{}
+	// eat any whitespace character from the input.
+	l.eatWhiteSpace()
 
 	switch l.ch {
 	case '=':
@@ -59,8 +65,64 @@ func (l *Lexer) NextToken() token.Token {
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
+
+	default:
+		if isLetter(l.ch) {
+			identifier := l.getIdentifier()
+			tok.Literal = identifier
+			tok.Type = token.GetIdent(identifier)
+			return tok
+		} else if isDigit(l.ch) {
+			number := l.getNumber()
+			fmt.Println("number is", number)
+			tok.Literal = number
+			tok.Type = token.INT
+			return tok
+		} else {
+			tok = token.Token{Type: token.ILLEGAL, Literal: string(l.ch)}
+		}
+
 	}
 
 	l.readChar()
 	return tok
+}
+
+func (l *Lexer) eatWhiteSpace() {
+	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+		l.readChar()
+	}
+}
+
+func (l *Lexer) getIdentifier() string {
+	startPoint := l.position
+	for isLetter(l.ch) {
+		l.readChar()
+	}
+
+	tok := l.input[startPoint:l.position]
+	return tok
+}
+
+func (l *Lexer) getNumber() string {
+	startPoint := l.position
+	for isDigit(l.ch) {
+		l.readChar()
+	}
+
+	return l.input[startPoint:l.position]
+}
+
+func isDigit(ch byte) bool {
+	if ch >= '0' && ch <= '9' {
+		return true
+	}
+	return false
+}
+
+func isLetter(ch byte) bool {
+	if ch >= 'a' && ch <= 'z' || ch >= 'A' && ch <= 'Z' || ch == '_' {
+		return true
+	}
+	return false
 }
