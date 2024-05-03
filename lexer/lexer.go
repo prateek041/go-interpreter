@@ -15,8 +15,8 @@ type Lexer struct {
 }
 
 // initialze a new lexer with the input string and read in the first character from the input
-func New(input string) Lexer {
-	l := Lexer{input: input}
+func New(input string) *Lexer {
+	l := &Lexer{input: input}
 	l.readChar()
 	return l
 }

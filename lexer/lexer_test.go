@@ -109,7 +109,7 @@ func TestNextFunction(t *testing.T) {
 		// we expect a Token struct here. {Type: token.ASSIGN, Literal: "="}
 		tok := l.NextToken()
 
-		fmt.Println("Got and Expected", tok.Literal, tok.Type, tt.Literal, tt.Type)
+		fmt.Println("Got this and Expected", tok.Literal, tok.Type, tt.Literal, tt.Type)
 
 		if tok.Type != tt.Type {
 			t.Fatalf("test[%d] - token type wrong, expected=%q, got=%q", i, tt.Type, tok.Type)
