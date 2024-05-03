@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/prateek041/go-interpreter/token"
 )
@@ -118,6 +119,13 @@ func (l *Lexer) NextToken() token.Token {
 
 	l.readChar()
 	return tok
+}
+
+func (l *Lexer) SpitTokens(out io.Writer) {
+	for l.position <= len(l.input) {
+		tok := l.NextToken()
+		fmt.Fprintf(out, "%+v\n", tok)
+	}
 }
 
 func (l *Lexer) eatWhiteSpace() {
