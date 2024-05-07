@@ -51,7 +51,7 @@ type Token struct {
 	Literal string    // how the character looks like in code.
 }
 
-var keywords = map[string]string{
+var keywords = map[string]TokenType{
 	"let":    LET,
 	"fn":     FUNCTION,
 	"return": RETURN,
@@ -62,7 +62,7 @@ var keywords = map[string]string{
 }
 
 // GetIdent takes the input unkown string, which is recognized by compiler and returns the type of it, i.e. if it is a keyword or an identifier
-func GetIdent(ident string) string {
+func GetIdent(ident string) TokenType {
 	if tok, ok := keywords[ident]; ok {
 		return tok
 	}

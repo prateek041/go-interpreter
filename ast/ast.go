@@ -41,8 +41,8 @@ func (p *Program) TokenLiteral() string {
 // value: the evaluated value of an expression.
 type LetStatement struct {
 	Token token.Token
-	Value *Expression
-	Name  Identifier
+	Value Expression
+	Name  *Identifier
 }
 
 func (ls *LetStatement) TokenLiteral() string {

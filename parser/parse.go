@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"fmt"
+
 	"github.com/prateek041/go-interpreter/ast"
 	"github.com/prateek041/go-interpreter/lexer"
 	"github.com/prateek041/go-interpreter/token"
@@ -10,13 +12,23 @@ type Parser struct {
 	l         *lexer.Lexer
 	currToken token.Token
 	peekToken token.Token
+	errors    []string
 }
 
 func New(l *lexer.Lexer) *Parser {
-	p := &Parser{l: l}
+	p := &Parser{l: l, errors: []string{}}
 	p.nextToken()
 	p.nextToken()
 	return p
+}
+
+func (p *Parser) GetErrors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(t token.TokenType) {
+	msg := fmt.Sprintf("expected next token to be %s, got %s instead", t, p.peekToken.Type)
+	p.errors = append(p.errors, msg)
 }
 
 func (p *Parser) nextToken() {
@@ -30,10 +42,12 @@ func (p *Parser) ParseProgram() *ast.Program {
 	program.Statements = []ast.Statement{}
 
 	for p.currToken.Type != token.EOF {
+		fmt.Println("Parsing token type", p.currToken.Type)
 		stmt := p.ParseStatement()
 		if stmt != nil {
 			program.Statements = append(program.Statements, stmt)
 		}
+		p.nextToken()
 	}
 	return program
 }
@@ -73,19 +87,15 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 		p.nextToken()
 		return true
 	} else {
+		p.peekError(t)
 		return false
 	}
 }
 
 func (p *Parser) peekTokenIs(t token.TokenType) bool {
-	return p.currToken.Type == t
-}
-
-func (p *Parser) currTokenIs(t token.TokenType) bool {
 	return p.peekToken.Type == t
 }
 
-// here is the flow of the entire parser.
-// Parsing the Let statement
-// Each let statement must have an Identifier which is the variable name, next token should be ASSIGN, and finally
-// till we hit the semicolon.
+func (p *Parser) currTokenIs(t token.TokenType) bool {
+	return p.currToken.Type == t
+}

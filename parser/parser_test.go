@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/prateek041/go-interpreter/ast"
@@ -16,7 +17,11 @@ func TestLetStatement(t *testing.T) {
 
 	p := New(l)
 
+	fmt.Println("Parsing started ")
 	ast := p.ParseProgram()
+	checkParseError(t, p)
+
+	fmt.Println("Parsing done successfully")
 
 	if ast == nil {
 		t.Fatalf("Parsing program returned nil")
@@ -36,11 +41,25 @@ func TestLetStatement(t *testing.T) {
 
 	for i, tt := range tests {
 		stmt := ast.Statements[i]
+		fmt.Println("checking this statement", stmt)
 
 		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
 			return
 		}
 	}
+}
+
+func checkParseError(t *testing.T, p *Parser) {
+	errors := p.GetErrors()
+	if len(errors) == 0 {
+		return
+	}
+
+	t.Errorf("parser has %d errors", len(errors))
+	for _, msg := range errors {
+		t.Errorf("parser error: %q", msg)
+	}
+	t.FailNow()
 }
 
 func testLetStatement(t *testing.T, stmt ast.Statement, name string) bool {
