@@ -43,10 +43,27 @@ func TestLetStatement(t *testing.T) {
 	}
 }
 
-func testLetStatement(t *testing.T, stmt ast.Statement, name string) {
+func testLetStatement(t *testing.T, stmt ast.Statement, name string) bool {
 	if stmt.TokenLiteral() != "let" {
-		// error
+		t.Errorf("stmt.TokenLiteral not 'let'. got=%q", stmt.TokenLiteral())
+		return false
 	}
 
+	// asserting if stmt, the interface, holds a concrete type LetStatement
 	letstmt, ok := stmt.(*ast.LetStatement)
+	if !ok {
+		t.Errorf("stmt not *ast.LetStatement. got=%T", stmt)
+		return false
+	}
+
+	if letstmt.Name.Value != name {
+		t.Errorf("letStmt.Name.Value not '%s'. got=%s", name, letstmt.Name.Value)
+		return false
+	}
+
+	if letstmt.Name.TokenLiteral() != name {
+		t.Errorf("letStmt.Name.TokenLiteral() not '%s'. got=%s", name, letstmt.Name.TokenLiteral())
+		return false
+	}
+	return true
 }

@@ -7,20 +7,24 @@ type Node interface {
 	TokenLiteral() string
 }
 
+// Statement is a node in the AST, which does not generate a value
 type Statement interface {
 	Node
 	statementNode()
 }
 
+// Expression is a node in AST that generates a value.
 type Expression interface {
 	Node
 	expressionNode()
 }
 
+// Program is a collection of statements
 type Program struct {
 	Statements []Statement
 }
 
+// TokenLiteral method implements the Node interface
 func (p *Program) TokenLiteral() string {
 	if len(p.Statements) > 0 {
 		return p.Statements[0].TokenLiteral()
@@ -33,14 +37,12 @@ func (p *Program) TokenLiteral() string {
 // let x = 5 has three major things
 // let <identifier> = <expression>
 // let: is a token token.LET.
-// identifier: is a token, which can be a simple name but also an expression itself. so we are writing re-uable logic for it. currently it only represents the name of the variable.
+// identifier: this holds the name of the binding.
 // value: the evaluated value of an expression.
-//
-
 type LetStatement struct {
 	Token token.Token
-	Name  *Identifier
-	Value Expression
+	Value *Expression
+	Name  Identifier
 }
 
 func (ls *LetStatement) TokenLiteral() string {
@@ -49,11 +51,19 @@ func (ls *LetStatement) TokenLiteral() string {
 
 func (ls *LetStatement) statementNode() {}
 
+// Identifier holds the name of the binding (variable).
 type Identifier struct {
 	Token token.Token // here the token is IDENT.
 	Value string      // value is the actual name of the variable, "x", "y" etc.
 }
 
+// expressionNode methods implements the ExpressionNode interface
+// Why is the identifier implmeneting expressionNode? simply because statements like let x = y, here y is an identifier
+// and it is also producing values. So, to keep the number of different node types small, Identifier can have a Token
+// as well as a Value.
+func (i *Identifier) expressionNode() {}
+
+// TokenLiteral methods implements the Node interface
 func (i *Identifier) TokenLiteral() string {
 	return i.Token.Literal
 }

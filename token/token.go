@@ -43,10 +43,12 @@ const (
 	FALSE    = "FALSE"
 )
 
+type TokenType string
+
 type Token struct {
 	// TODO: Think about why a different Token Type was defined instead of just using a string.
-	Type    string // TODO: figure this out
-	Literal string // how the character looks like in code.
+	Type    TokenType // TODO: figure this out
+	Literal string    // how the character looks like in code.
 }
 
 var keywords = map[string]string{
