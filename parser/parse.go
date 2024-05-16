@@ -42,7 +42,6 @@ func (p *Parser) ParseProgram() *ast.Program {
 	program.Statements = []ast.Statement{}
 
 	for p.currToken.Type != token.EOF {
-		fmt.Println("Parsing token type", p.currToken.Type)
 		stmt := p.ParseStatement()
 		if stmt != nil {
 			program.Statements = append(program.Statements, stmt)

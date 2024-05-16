@@ -107,7 +107,6 @@ func (l *Lexer) NextToken() token.Token {
 			return tok
 		} else if isDigit(l.ch) {
 			number := l.getNumber()
-			fmt.Println("number is", number)
 			tok.Literal = number
 			tok.Type = token.INT
 			return tok

@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/prateek041/go-interpreter/ast"
@@ -11,17 +10,14 @@ import (
 func TestLetStatement(t *testing.T) {
 	input := `let x = 5;
   let y = 10;
-  let foobar = 123456`
+  let foobar = 123123;`
 
 	l := lexer.New(input)
 
 	p := New(l)
 
-	fmt.Println("Parsing started ")
 	ast := p.ParseProgram()
 	checkParseError(t, p)
-
-	fmt.Println("Parsing done successfully")
 
 	if ast == nil {
 		t.Fatalf("Parsing program returned nil")
@@ -41,7 +37,6 @@ func TestLetStatement(t *testing.T) {
 
 	for i, tt := range tests {
 		stmt := ast.Statements[i]
-		fmt.Println("checking this statement", stmt)
 
 		if !testLetStatement(t, stmt, tt.expectedIdentifier) {
 			return
